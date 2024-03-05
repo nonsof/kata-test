@@ -16,6 +16,9 @@ class Main {
         ROMAN_NUMERALS.put("VIII", 8);
         ROMAN_NUMERALS.put("IX", 9);
         ROMAN_NUMERALS.put("X", 10);
+        ROMAN_NUMERALS.put("C", 100);
+        ROMAN_NUMERALS.put("M", 500);
+        ROMAN_NUMERALS.put("M", 1000);
     }
 
     private static final Map<Integer, String> ARABIC_NUMERALS = new HashMap<>();
@@ -50,7 +53,7 @@ class Main {
             } catch (Exception e) {
                 System.out.println("Ошибка: " + e.getMessage());
                 if (e.getMessage().startsWith("Римские числа")) {
-                    break; // Добавлено условие для завершения программы после ошибки с римскими числами
+                    break;
                 }
             }
         }
@@ -95,8 +98,8 @@ class Main {
                 break;
             case "-":
                 result = num1 - num2;
-                if (isRoman && result <= 0) {
-                    throw new Exception("Римские числа могут быть только от I до X включительно");
+                if (isRoman && (result <= 0 || result > 10)) {
+                    throw new Exception("Римские числа не могут быть отрицательными");
                 }
                 break;
             case "*":
@@ -128,10 +131,22 @@ class Main {
     }
 
     private static String convertToRoman(int number) {
-        if (number < 1 || number > 10) {
-            throw new IllegalArgumentException("Римские числа могут быть только от I до X включительно");
+        if (number < 1) {
+            throw new IllegalArgumentException();
         }
-
-        return ARABIC_NUMERALS.get(number);
+    
+        StringBuilder result = new StringBuilder();
+    
+        String[] romanNumerals = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+        int[] values = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+    
+        for (int i = 0; i < values.length; i++) {
+            while (number >= values[i]) {
+                result.append(romanNumerals[i]);
+                number -= values[i];
+            }
+        }
+    
+        return result.toString();
     }
-}
+}    
